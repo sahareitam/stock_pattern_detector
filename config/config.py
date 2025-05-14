@@ -49,9 +49,9 @@ API = {
     "debug": True
 }
 
-# Logging settings
 LOGGING = {
     "level": "INFO",
     "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    "log_file": "stock_pattern_detector.log"
+    "log_file": "stock_pattern_detector.log",
+    "log_dir": "logs"
 }
