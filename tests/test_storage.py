@@ -1,10 +1,7 @@
-# tests/test_storage.py
 import unittest
 import tempfile
 import os
 from datetime import datetime, timedelta
-import pandas as pd
-
 from data_storage.storage import DatabaseStorage
 
 
