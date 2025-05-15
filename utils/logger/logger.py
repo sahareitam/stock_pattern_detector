@@ -13,7 +13,7 @@ except ImportError:
         "level": "INFO",
         "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         "log_file": "stock_pattern_detector.log",
-        "log_dir": "logs"  # Default logs directory
+        "log_dir": "logs"
     }
 
 def _get_logs_dir():
@@ -44,7 +44,6 @@ def get_logger(name: Optional[str] = None) -> logging.Logger:
     """
     # Get or create logger
     logger = logging.getLogger(name)
-
     # Only configure logger if it hasn't been configured yet
     if not logger.handlers:
         # Set level from config (default to INFO if not specified)
@@ -57,6 +56,7 @@ def get_logger(name: Optional[str] = None) -> logging.Logger:
 
         # Create console handler
         console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.DEBUG)
         console_handler.setFormatter(formatter)
         logger.addHandler(console_handler)
 
@@ -73,6 +73,7 @@ def get_logger(name: Optional[str] = None) -> logging.Logger:
             when='midnight',
             backupCount=7  # Keep logs for 7 days
         )
+        file_handler.setLevel(logging.DEBUG)
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
 
@@ -86,3 +87,4 @@ root_logger = get_logger()
 
 # Export the get_logger function as the main API
 __all__ = ['get_logger']
+logger = get_logger("default_logger")

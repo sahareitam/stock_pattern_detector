@@ -33,12 +33,13 @@ DATABASE = {
 # Pattern detection parameters
 PATTERNS = {
     "cup_and_handle": {
-        "cup_depth_min": 0.15,    # Minimum cup depth (15% from peak)
-        "cup_depth_max": 0.50,    # Maximum cup depth (50% from peak)
-        "handle_depth_min": 0.20, # Handle should be at least 20% of cup depth
-        "handle_depth_max": 0.50, # Handle should be at most 50% of cup depth
-        "handle_length_max": 0.5, # Handle length compared to cup length
+        "cup_depth_min": 0.10,    # Minimum cup depth (10% from peak, was 15%)
+        "cup_depth_max": 0.60,    # Maximum cup depth (60% from peak, was 50%)
+        "handle_depth_min": 0.10, # Handle should be at least 10% of cup depth (was 20%)
+        "handle_depth_max": 0.60, # Handle should be at most 60% of cup depth (was 50%)
+        "handle_length_max": 0.7, # Handle length compared to cup length (was 0.5)
     }
+
     # Future patterns can be added here
 }
 
