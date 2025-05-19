@@ -63,7 +63,7 @@ class YahooFinanceDataSource(BaseDataSource):
 
         while attempt < self.max_retries:
             try:
-                logger.debug(f"Attempting {operation_name} (attempt {attempt+1}/{self.max_retries})")
+                logger.info(f"Attempting {operation_name} (attempt {attempt+1}/{self.max_retries})")
                 result = func(*args, **kwargs)
                 if attempt > 0:
                     logger.info(f"Successfully completed {operation_name} after {attempt+1} attempts")
@@ -76,7 +76,7 @@ class YahooFinanceDataSource(BaseDataSource):
                 # Log the error with appropriate level based on attempt
                 if attempt < self.max_retries:
                     logger.warning(f"Error during {operation_name} (attempt {attempt}/{self.max_retries}): {str(e)}")
-                    logger.debug(f"Retrying in {self.retry_delay} seconds...")
+                    logger.info(f"Retrying in {self.retry_delay} seconds...")
                     time.sleep(self.retry_delay)
                 else:
                     logger.error(f"Failed {operation_name} after {self.max_retries} attempts. Last error: {str(e)}")
@@ -114,7 +114,7 @@ class YahooFinanceDataSource(BaseDataSource):
                 # Get the latest row
                 latest = hist.iloc[-1]
 
-                logger.debug(f"Retrieved latest price for {symbol}: {latest['Close']}")
+                logger.info(f"Retrieved latest price for {symbol}: {latest['Close']}")
                 return {
                     'symbol': symbol,
                     'timestamp': hist.index[-1].to_pydatetime(),

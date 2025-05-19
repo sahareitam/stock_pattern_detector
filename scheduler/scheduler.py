@@ -126,11 +126,12 @@ class AppScheduler:
                 collect_data()
             else:
                 current_time = datetime.now().strftime('%H:%M')
-                logger.debug(f"Skipping data collection - outside trading hours (current time: {current_time})")
+                logger.info(f"Skipping data collection - outside trading hours (current time: {current_time})")
         except Exception as e:
             logger.error(f"Error in scheduled data collection: {str(e)}", exc_info=True)
 
-    def _cleanup_old_data(self):
+    @staticmethod
+    def _cleanup_old_data():
         """
         Clean up old data beyond the retention period.
         Calls the database manager's delete_old_data method.
@@ -143,7 +144,8 @@ class AppScheduler:
         except Exception as e:
             logger.error(f"Error in scheduled data cleanup: {str(e)}", exc_info=True)
 
-    def is_within_trading_hours(self, now=None):
+    @staticmethod
+    def is_within_trading_hours(now=None):
         """
         Check if given time (or current time) is within configured trading hours.
 
@@ -177,6 +179,9 @@ class AppScheduler:
 
         # Return True only if within time range and it's a weekday
         return start_time <= current_time <= end_time and is_weekday
+
+# Singleton instance
+_scheduler_instance = None
 
 def get_scheduler():
     """

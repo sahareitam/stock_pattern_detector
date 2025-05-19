@@ -120,7 +120,7 @@ class DataCollector:
 
                 if not df.empty:
                     result[symbol] = df
-                    logger.debug(f"Individual collection successful for {symbol}")
+                    logger.info(f"Individual collection successful for {symbol}")
                 else:
                     logger.warning(f"Individual collection returned no data for {symbol}")
             except Exception as e:
