@@ -77,7 +77,10 @@ class DataCollector:
 
                 # Save to database
                 try:
-                    self.db.insert_price(
+                    # Always get a fresh DB reference
+                    from data_storage import get_db
+                    db = get_db()
+                    db.insert_price(
                         symbol=symbol,
                         timestamp=latest['timestamp'],
                         open_price=latest['open'],

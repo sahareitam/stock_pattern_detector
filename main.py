@@ -12,7 +12,7 @@ from datetime import datetime
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # Import configuration
-from config.config import STOCKS, TRADING_HOURS, COLLECTION_INTERVAL_MINUTES
+from config.config import STOCKS, TRADING_HOURS, COLLECTION_INTERVAL_MINUTES, API
 
 # Import core components
 from utils.logger import get_logger
@@ -38,6 +38,9 @@ class MainApplication:
         # Initialize flag for graceful shutdown
         self.running = False
 
+        # Initialize API server reference
+        self.api_server = None
+
         # Initialize database connection
         logger.info("Initializing database connection")
         self.db = get_db()
@@ -60,6 +63,7 @@ class MainApplication:
 
         logger.info("Application initialization complete")
 
+    # In the start() method of MainApplication class:
     def start(self):
         """Start the application and all its components."""
         if self.running:
@@ -95,6 +99,22 @@ class MainApplication:
                 logger.info("Outside trading hours, skipping initial collection")
                 logger.info(f"Trading hours are {TRADING_HOURS['start']} - {TRADING_HOURS['end']}")
 
+            # Start API server in a separate thread with proper production WSGI server
+            from threading import Thread
+            from api import run_api_production
+
+            logger.info(f"Starting API server on {API.get('host', 'localhost')}:{API.get('port', 5000)}")
+            self.api_server = Thread(
+                target=run_api_production,
+                args=(
+                    API.get('host', 'localhost'),
+                    API.get('port', 5000)
+                ),
+                daemon=True
+            )
+            self.api_server.start()
+            logger.info("API server started in background thread")
+
             self.running = True
             logger.info("Application started successfully")
             return True
@@ -115,9 +135,14 @@ class MainApplication:
         try:
             # Stop the scheduler
             self.scheduler.stop()
+            logger.info("Scheduler stopped")
 
             # Close database connection
             self.db.close()
+            logger.info("Database connection closed")
+
+            # Note: The API server is a daemon thread, will be terminated automatically
+            # when the main thread exits
 
             self.running = False
             logger.info("Application shutdown complete")
@@ -161,6 +186,7 @@ def main():
     logger.info(f"Monitoring {len(STOCKS)} stocks: {', '.join(STOCKS)}")
     logger.info(f"Trading hours: {TRADING_HOURS['start']} - {TRADING_HOURS['end']} (Israel time)")
     logger.info(f"Data collection interval: {COLLECTION_INTERVAL_MINUTES} minutes")
+    logger.info(f"API running on: {API.get('host', 'localhost')}:{API.get('port', 5000)}")
     logger.info("======================================")
 
     # Run the application

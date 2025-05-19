@@ -116,6 +116,11 @@ def create_app():
 # Create a default app instance
 flask_app = create_app()
 
+def run_api_production(host="localhost", port=5000):
+    """Run the Flask API with a production WSGI server."""
+    import waitress
+    logger.info(f"Starting API server with waitress on {host}:{port}")
+    waitress.serve(flask_app, host=host, port=port)
 
 def run_api(host="localhost", port=5000, debug=False):
     """

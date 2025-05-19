@@ -2,16 +2,17 @@
 import os
 from data_storage.storage import DatabaseStorage
 
-# Global variable for singleton
+# Global singleton instance
 _db_instance = None
 
 def get_db():
     """
     Get database instance with lazy initialization.
-    Uses in-memory DB for tests.
+    Uses a singleton with thread-safe operations.
     """
     global _db_instance
     if _db_instance is None:
+        # For tests, use in-memory database
         if "PYTEST_CURRENT_TEST" in os.environ:
             _db_instance = DatabaseStorage(db_path=":memory:")
         else:

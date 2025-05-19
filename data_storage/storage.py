@@ -1,8 +1,9 @@
-# Database storage implementation for stock price data
+# data_storage/storage.py
 import os
 import sqlite3
 from datetime import datetime, timedelta
 import pandas as pd
+import threading
 
 from config.config import DATABASE, DATA_RETENTION_DAYS
 from data_storage.models import create_tables, timestamp_to_db, db_to_timestamp
@@ -29,11 +30,12 @@ class DatabaseStorage:
 
         self.db_path = db_path
         self.conn = None
+        self._lock = threading.RLock()  # Add a lock for thread safety
         self._connect()
 
     def _connect(self):
         """Establish a connection to the SQLite database and create tables if needed."""
-        self.conn = sqlite3.connect(self.db_path)
+        self.conn = sqlite3.connect(self.db_path, check_same_thread=False)
         # Enable foreign keys
         self.conn.execute("PRAGMA foreign_keys = ON")
         # Configure for better concurrent access
@@ -63,22 +65,25 @@ class DatabaseStorage:
             db.insert_price('AAPL', datetime.now(), 150.25, 152.30, 149.80, 151.95, 1200000)
         """
         self._ensure_connection()
-        cursor = self.conn.cursor()
 
-        # Convert timestamp to Unix timestamp if it's a datetime
-        ts = timestamp_to_db(timestamp)
+        # Use lock to ensure thread safety
+        with self._lock:
+            cursor = self.conn.cursor()
 
-        # Get current time for created_at
-        now = int(datetime.now().timestamp())
+            # Convert timestamp to Unix timestamp if it's a datetime
+            ts = timestamp_to_db(timestamp)
 
-        cursor.execute('''
-        INSERT INTO stock_prices 
-        (symbol, timestamp, open, high, low, close, volume, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (symbol, ts, open_price, high, low, close, volume, now))
+            # Get current time for created_at
+            now = int(datetime.now().timestamp())
 
-        self.conn.commit()
-        return cursor.lastrowid
+            cursor.execute('''
+            INSERT INTO stock_prices 
+            (symbol, timestamp, open, high, low, close, volume, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (symbol, ts, open_price, high, low, close, volume, now))
+
+            self.conn.commit()
+            return cursor.lastrowid
 
     def get_prices(self, symbol, start_time=None, end_time=None):
         """
@@ -91,13 +96,6 @@ class DatabaseStorage:
 
         Returns:
             DataFrame: Pandas DataFrame with the price data
-
-        Example:
-            # Get AAPL prices for the last 3 days
-            from datetime import datetime, timedelta
-            end = datetime.now()
-            start = end - timedelta(days=3)
-            df = db.get_prices('AAPL', start, end)
         """
         self._ensure_connection()
 
@@ -122,10 +120,12 @@ class DatabaseStorage:
         # Order by timestamp to ensure chronological order
         query += " ORDER BY timestamp ASC"
 
-        # Execute query and fetch all results
-        cursor = self.conn.cursor()
-        cursor.execute(query, params)
-        rows = cursor.fetchall()
+        # Use lock to ensure thread safety
+        with self._lock:
+            # Execute query and fetch all results
+            cursor = self.conn.cursor()
+            cursor.execute(query, params)
+            rows = cursor.fetchall()
 
         if not rows:
             # Return empty DataFrame with correct columns
@@ -148,11 +148,6 @@ class DatabaseStorage:
 
         Returns:
             int: Number of records deleted
-
-        Example:
-            # Delete data older than 3 days
-            deleted_count = db.delete_old_data(3)
-            print(f"Deleted {deleted_count} old records")
         """
         self._ensure_connection()
 
@@ -163,12 +158,14 @@ class DatabaseStorage:
         cutoff_date = datetime.now() - timedelta(days=retention_days)
         cutoff_timestamp = timestamp_to_db(cutoff_date)
 
-        # Delete records older than cutoff
-        cursor = self.conn.cursor()
-        cursor.execute("DELETE FROM stock_prices WHERE timestamp < ?", (cutoff_timestamp,))
-        deleted_count = cursor.rowcount
+        # Use lock to ensure thread safety
+        with self._lock:
+            # Delete records older than cutoff
+            cursor = self.conn.cursor()
+            cursor.execute("DELETE FROM stock_prices WHERE timestamp < ?", (cutoff_timestamp,))
+            deleted_count = cursor.rowcount
+            self.conn.commit()
 
-        self.conn.commit()
         return deleted_count
 
     def close(self):

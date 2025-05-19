@@ -9,6 +9,8 @@ yfinance = "*"
 scipy = "*"
 apscheduler = "*"
 pytz = "*"
+waitress = "*"
+matplotlib = "*"
 
 [dev-packages]
 pytest = "*"
