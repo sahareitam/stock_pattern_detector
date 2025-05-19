@@ -1,15 +1,14 @@
 # Main data collector module that handles fetching stock data
 # and saving it to the database
 
-import logging
 from datetime import datetime
 
 from config.config import STOCKS, COLLECTION_INTERVAL_MINUTES
 from data_collector.data_sources.yahoo_finance import YahooFinanceDataSource
 from data_storage import get_db
 
-# Configure logging
-logger = logging.getLogger(__name__)
+from utils.logger import get_logger
+logger = get_logger(__name__)
 
 
 class DataCollector:

@@ -2,11 +2,9 @@
 import yfinance as yf
 import pandas as pd
 from typing import List, Dict, Any, Optional, Union
-import logging
 from data_collector.data_source_base import BaseDataSource
-
-# Configure logging
-logger = logging.getLogger(__name__)
+from utils.logger import get_logger
+logger = get_logger(__name__)
 
 
 class YahooFinanceDataSource(BaseDataSource):

@@ -7,9 +7,12 @@ name = "pypi"
 pandas = "*"
 yfinance = "*"
 scipy = "*"
+apscheduler = "*"
+pytz = "*"
 
 [dev-packages]
 pytest = "*"
+freezegun = "*"
 
 [requires]
 python_version = "3.13"

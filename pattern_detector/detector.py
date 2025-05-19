@@ -1,7 +1,6 @@
 # Main pattern detector module
 
-import logging
-from typing import Dict, List, Type, Optional, Any
+from typing import Dict, List, Optional
 import pandas as pd
 from datetime import datetime, timedelta
 
@@ -9,8 +8,8 @@ from pattern_detector.patterns.pattern_base import PatternBase
 from pattern_detector.patterns.cup_and_handle import CupAndHandlePattern
 from data_storage import get_db
 
-# Configure logging
-logger = logging.getLogger(__name__)
+from utils.logger import get_logger
+logger = get_logger(__name__)
 
 
 class PatternDetector:
@@ -61,7 +60,6 @@ class PatternDetector:
         pattern_detector = self.pattern_detectors[pattern_type]
 
         # Get the data - either from custom_data or from the database
-        data = None
         if custom_data is not None:
             data = custom_data
         else:

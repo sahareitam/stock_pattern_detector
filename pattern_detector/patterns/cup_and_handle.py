@@ -8,8 +8,8 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 from pattern_detector.patterns.pattern_base import PatternBase
 from config.config import PATTERNS
-# Configure logging
-logger = logging.getLogger(__name__)
+from utils.logger import get_logger
+logger = get_logger(__name__)
 
 
 class CupAndHandlePattern(PatternBase):

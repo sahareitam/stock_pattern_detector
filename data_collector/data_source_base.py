@@ -5,7 +5,6 @@ from abc import ABC, abstractmethod
 import pandas as pd
 from typing import List, Dict, Any
 
-
 class BaseDataSource(ABC):
     """
     Abstract base class for all stock data sources.

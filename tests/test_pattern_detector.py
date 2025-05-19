@@ -1,7 +1,4 @@
 import os
-
-from utils.logger import logger
-
 os.environ["PYTEST_CURRENT_TEST"] = "true"  # Ensure we're using test mode
 import pytest
 import pandas as pd
