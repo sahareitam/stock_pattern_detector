@@ -15,12 +15,30 @@ This system automatically collects stock price data for 7 major technology compa
 - Comprehensive logging and error handling
 - Modular, maintainable architecture
 
-## Prerequisites
+## Prerequisites (workstation setup)
 
-- **Python 3.10+** (developed and tested with Python 3.13)
-- **Pipenv** for dependency management
-- **Node.js & npm** (for running the optional Frontend UI)
-- **Operating System**: Windows, macOS, or Linux
+Before cloning the repository you must **install the tooling stack in the following order**:
+
+1. **Python 3.10 or newer** - download an official installer from [https://www.python.org/downloads/](https://www.python.org/downloads/) and ensure that the *Add Python to PATH* option is selected during installation. Confirm the installation:
+
+   ```bash
+   python --version
+   ```
+2. **pip** - Python 3 installers ship with *pip* out of the box. Verify that it is available:
+
+   ```bash
+   python -m pip --version
+   ```
+
+   If the command fails, install pip manually with the official [get-pip.py](https://bootstrap.pypa.io/get-pip.py) script.
+3. **Pipenv** - the project uses *Pipenv* for dependency management. Install it **once** (globally or per-user) with:
+
+   ```bash
+   python -m pip install --user pipenv
+   ```
+4. **Node.js & npm** (only if you want to run the optional React Frontend)
+
+> **Note** - all subsequent commands assume that `python`, `pip`, and `pipenv` resolve to the Python 3.10+ installation prepared above.
 
 ## Key Dependencies
 
@@ -48,6 +66,7 @@ This system automatically collects stock price data for 7 major technology compa
 |---------|---------|---------|
 | pytest | Testing framework | Latest |
 | freezegun | Time mocking for tests | Latest |
+
 
 ## Installation
 
