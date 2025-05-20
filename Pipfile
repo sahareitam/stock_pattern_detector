@@ -11,6 +11,8 @@ apscheduler = "*"
 pytz = "*"
 waitress = "*"
 matplotlib = "*"
+flask = "*"
+flask-cors = "*"
 
 [dev-packages]
 pytest = "*"

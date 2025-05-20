@@ -6,14 +6,17 @@ from flask import Flask, jsonify, request
 from pattern_detector import get_detector
 from config.config import STOCKS
 from utils.logger import get_logger
+from flask_cors import CORS
 
 # Initialize logger
 logger = get_logger(__name__)
 
 
+
 def create_app():
     """Create and configure the Flask application"""
     app = Flask(__name__)
+    CORS(app)
 
     @app.route('/health', methods=['GET'])
     def health_check():
@@ -136,7 +139,6 @@ def run_api(host="localhost", port=5000, debug=False):
     """
     logger.info(f"Starting API server on {host}:{port}")
     flask_app.run(host=host, port=port, debug=debug)
-
 
 if __name__ == "__main__":
     # When run directly, start the API

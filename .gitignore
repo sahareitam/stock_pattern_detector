@@ -42,3 +42,13 @@ logs/
 
 # Local configuration
 .env.local
+
+# ───────── Frontend (Vite / React – Base44) ─────────
+node_modules/
+Front/dist/
+Front/.vite/
+Front/.cache/
+Front/.env*
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
