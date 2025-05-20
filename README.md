@@ -19,6 +19,7 @@ This system automatically collects stock price data for 7 major technology compa
 
 - **Python 3.10+** (developed and tested with Python 3.13)
 - **Pipenv** for dependency management
+- **Node.js & npm** (for running the optional Frontend UI)
 - **Operating System**: Windows, macOS, or Linux
 
 ## Key Dependencies
@@ -34,6 +35,13 @@ This system automatically collects stock price data for 7 major technology compa
 | apscheduler | Task scheduling | Latest |
 | numpy | Numerical computing | Latest |
 | pytz | Timezone handling | Latest |
+
+### Frontend Dependencies
+| Library | Purpose | Version |
+|---------|---------|---------|
+| React | UI Framework | 18.x |
+| Vite | Build tool | 5.x |
+| Tailwind CSS | Styling | 3.x |
 
 ### Development Packages
 | Library | Purpose | Version |
@@ -179,6 +187,56 @@ python -c "from api import run_api_production; run_api_production(host='0.0.0.0'
 ```
 
 Note: The system uses Waitress as the production WSGI server, as seen in the logs.
+
+### 🖼️ Base44 Frontend (Added for Improved UX)
+
+**Note:** Base44 generated **only** the user-interface files to provide a convenient way to use.
+
+Everything else was implemented and refined manually by me:
+
+- Data sampling and collection strategy
+- Cup and Handle pattern-detection algorithm
+- Symbol validation and normalization
+- Flask API design and routing
+- Error handling and structured logging
+- SQLite storage layer with retention policies
+- Interval-based data collection during market hours
+
+After Base44 generated the interface, I:
+
+- Integrated the UI into the repository and aligned paths, imports, and build scripts
+- Added missing configuration, helper modules, and environment files so the project runs locally
+- Improved the generated components for consistency with project conventions and visual polish
+
+
+### Running the Frontend
+
+To run the Frontend UI, follow these steps:
+
+1. **First, ensure the API server is running**:
+```bash
+pipenv run python -m api.app
+```
+
+Or for production:
+```bash
+pipenv run waitress-serve --listen=*:5000 api.app:flask_app
+```
+
+2. **Install Frontend dependencies**:
+```bash
+cd Front
+npm install
+```
+
+3. **Start the Frontend development server**:
+```bash
+npm run dev
+```
+
+The Vite development server will start and display a URL (typically http://localhost:5173) where you can access the UI.
+
+**Important:** The API server must be running before starting the Frontend, otherwise you'll see "Failed to Fetch" or CORS errors in the browser console.
 
 ## API Documentation
 
@@ -414,9 +472,33 @@ stock_pattern_detector/
 │   ├── __init__.py
 │   ├── logger/               # Logging utilities
 │   │   ├── __init__.py
-│   │   ├── advanced_logging.py
 │   │   └── logger.py         # Logging configuration
 │   └── plot_stock_data.py    # Stock visualization tool
+├── Front/                    # Frontend UI (Base44)
+│   ├── node_modules/         # npm dependencies (generated)
+│   ├── src/                  # React source files
+│   │   ├── Components/       # Reusable components
+│   │   │   ├── dashboard/    # Dashboard-specific components
+│   │   │   │   └── StockCard.jsx # Individual stock card component
+│   │   │   └── ui/           # UI primitives
+│   │   │       ├── alert.jsx
+│   │   │       ├── button.jsx
+│   │   │       ├── Localcard.jsx
+│   │   │       ├── separator.jsx
+│   │   │       └── use-toast.jsx
+│   │   ├── Pages/            # Page components
+│   │   │   ├── Dashboard.jsx # Main dashboard page
+│   │   │   └── home.jsx      # Home/landing page
+│   │   ├── index.css         # Global styles
+│   │   ├── Layout.jsx        # Application layout wrapper
+│   │   ├── main.jsx          # React entry point
+│   │   └── utils.js          # Frontend utilities
+│   ├── index.html            # HTML entry point
+│   ├── package.json          # Frontend dependencies
+│   ├── package-lock.json     # Locked dependencies
+│   ├── postcss.config.js     # PostCSS configuration
+│   ├── tailwind.config.js    # Tailwind CSS configuration
+│   └── vite.config.js        # Vite bundler configuration
 ├── tests/                    # Unit tests
 │   ├── __init__.py
 │   ├── test_api.py
@@ -511,6 +593,16 @@ PATTERNS = {
 mkdir -p logs
 ```
 
+#### Frontend Issues
+
+**Problem**: The Frontend UI shows "Failed to Fetch" or CORS errors.
+
+**Solution**:
+1. Make sure the API server is running on port 5000 before starting the Frontend
+2. Check browser console for specific error messages
+3. Ensure you have run `npm install` in the Front directory
+4. Verify the API server is accepting connections (try the curl commands above)
+
 ## Future Work
 
 This POC demonstrates the core functionality of a stock pattern detection system. Here are potential enhancements for a production environment:
@@ -528,12 +620,7 @@ This POC demonstrates the core functionality of a stock pattern detection system
 - Use Cloud SQL for persistent database storage
 - Set up Cloud Monitoring for tracking application performance
 - Implement Cloud Scheduler for scheduling tasks
-- Use Cloud Secret Manager for secure credential management
 
-### Kubernetes Basics
-- Package the application as Docker containers
-- Basic Kubernetes deployment for orchestration
-- Use configuration files for environment settings
 
 ### Machine Learning Enhancements
 - Improve pattern detection with simple classification models
