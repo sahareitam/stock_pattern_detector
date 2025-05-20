@@ -1,8 +1,6 @@
-# Cup and Handle pattern detector implementation
-
 import numpy as np
 import pandas as pd
-from typing import Dict, Any, List, Tuple, Optional
+from typing import Dict, Any, Tuple
 from scipy.signal import find_peaks
 import logging
 logging.basicConfig(level=logging.DEBUG)

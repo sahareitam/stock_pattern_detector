@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # Main application entry point for Stock Pattern Detector POC
 # This file initializes all components and serves as the application entrypoint
 

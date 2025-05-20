@@ -1,6 +1,5 @@
 import React from "react";
 import { cn } from "../../utils";
-// רכיב Card ראשי
 const Card = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
@@ -13,7 +12,6 @@ const Card = React.forwardRef(({ className, ...props }, ref) => (
 ));
 Card.displayName = "Card";
 
-// רכיב CardHeader לכותרת הכרטיס
 const CardHeader = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
@@ -23,7 +21,6 @@ const CardHeader = React.forwardRef(({ className, ...props }, ref) => (
 ));
 CardHeader.displayName = "CardHeader";
 
-// רכיב CardTitle לכותרת טקסטואלית
 const CardTitle = React.forwardRef(({ className, ...props }, ref) => (
   <h3
     ref={ref}
@@ -36,7 +33,6 @@ const CardTitle = React.forwardRef(({ className, ...props }, ref) => (
 ));
 CardTitle.displayName = "CardTitle";
 
-// רכיב CardContent לתוכן המרכזי של הכרטיס
 const CardContent = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
@@ -46,7 +42,6 @@ const CardContent = React.forwardRef(({ className, ...props }, ref) => (
 ));
 CardContent.displayName = "CardContent";
 
-// רכיב CardFooter לחלק התחתון של הכרטיס
 const CardFooter = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
